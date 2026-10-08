@@ -1,343 +1,246 @@
-# Java Study Plan — From Basics to Advanced
+# Java Study Plan — Learning by Breaking Code
 
-A structured roadmap to master **Java** and prepare for **technical interviews**.
-It combines two tracks that run in parallel:
-
-- **Java Track** — the language, the JDK and the ecosystem (this folder: `javaBasicsTraining`)
-- **DSA Track** — data structures and algorithms practiced on LeetCode (`src/main/java/leetcode`)
+A hands-on roadmap to master **Java** and get ready for **technical interviews**.
+The order is driven by what interviews ask the most: **OOP and modifiers → concurrency → JVM and advanced topics**.
 
 > Tick the boxes (`- [x]`) as you go, so this file also works as a progress tracker on GitHub.
 
 ---
 
-## How to Use This Plan
+## The Method
 
-1. Work through the phases **in order**. Each phase builds on the previous one.
-2. For every topic: **read → write code → explain it out loud** (as if in an interview).
-3. Each module gets its own package here, e.g. `javaBasicsTraining/phase01_basics/`, with small runnable classes and a short `notes.md`.
-4. Do the **DSA Track** problems listed in each phase alongside the Java topics.
-5. Finish each phase with the **checkpoint**: if you can't answer the questions without looking, review before moving on.
+Every topic is a **numbered module** (`mXX_topicName/`) inside this folder, and each one follows the same loop:
 
-**Suggested pace:** ~1 to 2 weeks per phase, 1 to 2 hours a day. Consistency beats intensity.
+1. **Watch** the related lessons from [Maratona Java Virado no Jiraya (DevDojo)](https://www.youtube.com/watch?v=VKjFuX91G5Q&list=PL62G310vn6nFIsOCC0H-C2infYgwm8SWW).
+2. **Run** the module's `Main.java` and read the code next to the output.
+3. **Break it on purpose.** Every file has 🧪 *experiments* in its comments: uncomment a line, remove a modifier, add an `extends`... Read the compiler error and understand **why** the rule exists. Then undo it.
+4. **Build your own** small class using the concept (like `Pessoa` in `m01`), with comments in your own words.
+5. **Interview round:** answer the module's questions out loud, as if in a real interview, and get feedback.
 
----
-
-## Phase 1 — Fundamentals
-
-**Goal:** write simple programs comfortably and understand what Java does under the hood.
-
-- [ ] JDK vs JRE vs JVM, compiling (`javac`) and running (`java`), bytecode
-- [ ] Program structure: `class`, `main`, packages, imports
-- [ ] Primitive types (`int`, `long`, `double`, `char`, `boolean`...) and their sizes
-- [ ] Wrapper classes, autoboxing/unboxing, and the `Integer` cache pitfall (`==` vs `equals`)
-- [ ] Operators, precedence, integer division, overflow, casting
-- [ ] Control flow: `if/else`, `switch` (classic and new arrow syntax), loops, `break`/`continue`
-- [ ] Arrays (1D and 2D), `Arrays.sort`, `Arrays.fill`, `Arrays.toString`
-- [ ] `String`: immutability, String pool, `equals` vs `==`, common methods
-- [ ] `StringBuilder` and why concatenation inside loops is slow
-- [ ] Methods: parameters, return values, overloading, **pass-by-value** (also for objects)
-- [ ] `Scanner` and basic console input/output
-
-**DSA Track:** arrays and strings
-- [x] Remove Element
-- [x] Longest Common Prefix
-- [x] Find the Index of the First Occurrence in a String
-- [ ] Two Sum
-- [ ] Palindrome Number
-- [ ] Roman to Integer
-- [ ] Merge Sorted Array
-- [ ] Remove Duplicates from Sorted Array
-
-**Checkpoint:**
-- Why is `String` immutable, and what are the benefits?
-- Is Java pass-by-value or pass-by-reference?
-- What does `Integer a = 127, b = 127; a == b` return? And with `128`?
+A module is **done** when you can answer all of its interview questions without looking at the code.
 
 ---
 
-## Phase 2 — Object-Oriented Programming
+## Part 1 — OOP and the Language Core
 
-**Goal:** model problems with classes and understand the four pillars well enough to explain them.
+### ✅ m01 — Member Modifiers
+`m01_memberModifiers/` · DevDojo: 54–56, 61–63, 77–79
 
-- [ ] Classes, objects, constructors, `this`, constructor chaining
-- [ ] Access modifiers: `private`, default, `protected`, `public`
-- [ ] Encapsulation: getters/setters and when *not* to use them
-- [ ] `static` members, static blocks, and `final` (variables, methods, classes)
-- [ ] Inheritance, `super`, method overriding, `@Override`
-- [ ] Polymorphism: upcasting, downcasting, `instanceof` (with pattern matching)
-- [ ] Abstract classes vs interfaces (default and static methods in interfaces)
+- [x] `private` vs `public` on fields and methods
+- [x] Encapsulation: validating input in a setter
+- [x] `final` fields: assigned once, by nobody, inside or outside the class
+- [x] `static` and `static final` constants (`Pessoa.IDADE_MINIMA`)
+- [ ] `static` counter shared by all instances (create 3 objects and compare with/without `static`)
+- [ ] Throw `IllegalArgumentException` instead of printing "Error"
+
+**Interview questions**
+- Difference between a field with no modifier and a `protected` field?
+- `final int[] arr = {1, 2, 3};` — can you do `arr[0] = 10`? And `arr = new int[5]`?
+- Why can't a `static` method use `this`?
+
+### ✅ m02 — Class Modifiers
+`m02_classModifiers/` · DevDojo: 08, 71–75
+
+- [x] `public` class: one per file, same name as the file
+- [x] Package-private class: invisible outside its package
+- [x] `abstract` class: can't be instantiated, can have constructors and concrete methods
+- [x] `final` class: can't be extended (`String`, `Integer`)
+- [x] `sealed` + `permits`, `non-sealed` (Java 17)
+- [x] Exhaustive `switch` over a sealed hierarchy (no `default`)
+- [ ] All 9 🧪 experiments done
+
+**Interview questions**
+- Why is `String` a `final` class?
+- Why is `abstract final` illegal? And `abstract static` on a method?
+- What problem do sealed classes solve? Why does every permitted subclass need `final`, `sealed` or `non-sealed`?
+
+### m03 — Packages and `protected`
+`m03_packages/` · DevDojo: 08, 73
+
+- [ ] Packages, `import`, fully qualified names, static imports
+- [ ] `protected` vs package-private across packages (`a.Pai`, `b.Filho`, `b.Estranho`)
+- [ ] The `protected` trap: a subclass in another package can only access it **through inheritance**
+- [ ] `private` is per class, not per object (accessing `other.field` inside `equals`)
+- [ ] Build the access table yourself from the experiments
+
+**Interview questions**
+- Rank `private`, package-private, `protected`, `public` from most to least restrictive.
+- Can a subclass in another package call `parent.protectedField` on a `Parent` instance it received as a parameter?
+
+### m04 — Classes, Objects and Constructors
+`m04_classesAndObjects/` · DevDojo: 39–53, 58–59
+
+- [ ] Objects vs references; two references to the same object
+- [ ] Constructors, overloading, constructor chaining with `this(...)`
+- [ ] **Pass-by-value** with primitives and with references
+- [ ] Varargs
+- [ ] `static` vs instance initializer blocks
+
+**Interview questions**
+- Is Java pass-by-value or pass-by-reference? Prove it with a reassignment example.
+- What happens to the default constructor when you declare another constructor?
+
+### m05 — Inheritance and Polymorphism
+`m05_inheritance/` · DevDojo: 71–75
+
+- [ ] `extends`, `super`, `super(...)` in constructors
+- [ ] **Initialization order** (static blocks → instance blocks → constructors, parent before child)
+- [ ] Overriding rules: visibility can widen but not narrow, covariant returns, checked exceptions
+- [ ] Static methods are **hidden**, not overridden
+- [ ] Interfaces: `default`, `static` and `private` methods
+- [ ] Abstract class vs interface: when to use each
 - [ ] Composition over inheritance
-- [ ] `Object` methods: `equals`, `hashCode` (and their contract), `toString`
-- [ ] Inner classes: static nested, inner, local, anonymous
-- [ ] Enums (with fields, methods and `switch`)
-- [ ] Records (Java 16+) for immutable data
-- [ ] SOLID principles
 
-**DSA Track:** stacks and simple simulation
-- [x] Valid Parentheses
-- [ ] Min Stack
-- [ ] Implement Queue using Stacks
-- [ ] Baseball Game
+**Interview questions**
+- `Parent p = new Child(); p.staticMethod(); p.instanceMethod();` — which versions run, and why?
+- In what order do the blocks and constructors run when you do `new Child()`?
 
-**Checkpoint:**
-- If you override `equals`, why must you also override `hashCode`?
-- Abstract class or interface: when do you pick each?
-- Explain each SOLID principle with a small example.
+### m06 — The `Object` Contract and Immutability
+`m06_objectContract/`
 
----
+- [ ] `equals` and `hashCode`: the contract and what breaks in a `HashMap` without it
+- [ ] `toString`
+- [ ] Immutable class recipe: `final` class, `private final` fields, no setters, defensive copies
+- [ ] Records (Java 16+)
 
-## Phase 3 — Exceptions, Generics and Collections
+**Interview questions**
+- If two objects are `equals`, must they have the same `hashCode`? And the other way around?
+- Are only `private final` fields enough to make a class immutable?
 
-**Goal:** know the Collections Framework well enough to pick the right structure in an interview without thinking twice.
+### m07 — Nested Classes
+`m07_nestedClasses/` · DevDojo: 189–192
 
-- [ ] Exception hierarchy: `Throwable`, `Error`, `Exception`, `RuntimeException`
-- [ ] Checked vs unchecked exceptions
-- [ ] `try/catch/finally`, multi-catch, `try-with-resources`, custom exceptions
-- [ ] Generics: generic classes and methods, bounded types, wildcards (`? extends`, `? super`, PECS)
-- [ ] Type erasure and its limitations
-- [ ] `List`: `ArrayList` vs `LinkedList` (and their complexities)
-- [ ] `Set`: `HashSet`, `LinkedHashSet`, `TreeSet`
-- [ ] `Map`: `HashMap`, `LinkedHashMap`, `TreeMap`; `getOrDefault`, `merge`, `computeIfAbsent`
-- [ ] **How `HashMap` works internally** (buckets, hashing, collisions, treeification, resizing)
-- [ ] `Queue` / `Deque`: `ArrayDeque`, `PriorityQueue` (min-heap and max-heap)
-- [ ] `Comparable` vs `Comparator`, `Comparator.comparing(...).thenComparing(...)`
-- [ ] `Iterator`, `ConcurrentModificationException`
-- [ ] `Collections` and `Arrays` utility methods; immutable collections (`List.of`, `Map.of`)
+- [ ] Static nested vs inner class (and the hidden reference to the outer instance)
+- [ ] Local and anonymous classes
+- [ ] Anonymous class vs lambda; effectively final
 
-**DSA Track:** hashing, two pointers, sliding window
-- [ ] Contains Duplicate
-- [ ] Valid Anagram
-- [ ] Group Anagrams
-- [ ] Top K Frequent Elements
-- [ ] Valid Palindrome
-- [ ] 3Sum
-- [ ] Container With Most Water
-- [ ] Best Time to Buy and Sell Stock
-- [ ] Longest Substring Without Repeating Characters
-- [ ] Longest Repeating Character Replacement
+**Interview question:** why can an inner class cause a memory leak?
 
-**Checkpoint:**
-- What happens in a `HashMap` when two keys have the same hash?
-- What is the time complexity of `get` in a `HashMap`, `TreeMap` and `ArrayList`?
-- When do you use `ArrayDeque` instead of `Stack`, and why?
+### m08 — Exceptions
+`m08_exceptions/`
+
+- [ ] Hierarchy: `Throwable`, `Error`, `Exception`, `RuntimeException`
+- [ ] Checked vs unchecked; when to create custom exceptions
+- [ ] `try/catch/finally`, multi-catch, `try-with-resources`
+- [ ] What happens when `finally` has a `return`
+
+### m09 — Generics and Collections
+`m09_collections/`
+
+- [ ] Generics, bounded types, wildcards (PECS), type erasure
+- [ ] `List`, `Set`, `Map`, `Queue`, `Deque` and their complexities
+- [ ] **How `HashMap` works internally** (buckets, collisions, treeification, resize)
+- [ ] `Comparable` vs `Comparator`
+- [ ] `ConcurrentModificationException` and fail-fast iterators
+
+### m10 — Functional Java
+`m10_functional/`
+
+- [ ] Lambdas, functional interfaces, method references
+- [ ] Streams: `map`, `filter`, `flatMap`, `reduce`, collectors, `groupingBy`
+- [ ] `Optional` done right
+- [ ] Modern features: `var`, text blocks, switch expressions, pattern matching
 
 ---
 
-## Phase 4 — Functional Java and Modern Features
+## Part 2 — Concurrency
 
-**Goal:** write concise, modern Java (8 → 21) the way it's written at companies today.
+### m11 — Threads
+`m11_threads/` · DevDojo: 220–228
 
-- [ ] Lambdas and functional interfaces (`Function`, `Predicate`, `Consumer`, `Supplier`, `BiFunction`)
-- [ ] Method references (`Class::method`)
-- [ ] Streams API: `map`, `filter`, `reduce`, `flatMap`, `sorted`, `distinct`, `limit`
-- [ ] Collectors: `toList`, `toMap`, `groupingBy`, `partitioningBy`, `joining`, `counting`
-- [ ] Lazy evaluation, intermediate vs terminal operations
-- [ ] `Optional` — and how to use it correctly (and how not to)
-- [ ] `var` (local type inference)
-- [ ] Text blocks (`"""`)
-- [ ] Switch expressions and pattern matching for `switch`
-- [ ] Sealed classes and interfaces
-- [ ] Record patterns
-- [ ] Date/Time API (`LocalDate`, `LocalDateTime`, `Duration`, `ZonedDateTime`)
+- [ ] `Thread`, `Runnable`, thread lifecycle and states
+- [ ] Race condition: break a counter with two threads, then fix it
+- [ ] `synchronized` (method vs block), intrinsic locks
+- [ ] `wait` / `notify` / `notifyAll` and producer-consumer
+- [ ] Deadlock: create one on purpose, then fix it
 
-**DSA Track:** binary search and linked lists
-- [ ] Binary Search
-- [ ] Search in Rotated Sorted Array
-- [ ] Find Minimum in Rotated Sorted Array
-- [ ] Koko Eating Bananas
-- [ ] Reverse Linked List
-- [ ] Merge Two Sorted Lists
-- [ ] Linked List Cycle
-- [ ] Remove Nth Node From End of List
-- [ ] Reorder List
+### m12 — Concurrency API
+`m12_concurrencyApi/` · DevDojo: 229–245
 
-**Checkpoint:**
-- Difference between `map` and `flatMap`?
-- Why shouldn't `Optional` be used as a field or method parameter?
-- What problem do sealed classes solve?
+- [ ] Atomic classes (`AtomicInteger`) vs `synchronized`
+- [ ] `ReentrantLock`, `ReadWriteLock`
+- [ ] `ExecutorService`, thread pools, `Callable`, `Future`
+- [ ] `CompletableFuture`: chaining, combining, error handling
+- [ ] `ConcurrentHashMap`, `CountDownLatch`, `Semaphore`
 
----
+### m13 — Memory Model and Virtual Threads
+`m13_memoryModel/`
 
-## Phase 5 — JVM Internals and Memory
+- [ ] `volatile`: **visibility, not atomicity** (prove `volatile int count; count++` is still broken)
+- [ ] Happens-before; safe publication with `final` fields
+- [ ] Thread-safe singleton (double-checked locking, holder idiom, enum)
+- [ ] Virtual threads (Java 21): when they help and when they don't
 
-**Goal:** answer "what happens under the hood" questions — they separate juniors from mid/seniors.
-
-- [ ] JVM architecture: class loader, runtime data areas, execution engine
-- [ ] Stack vs heap; what lives where
-- [ ] Garbage collection: generations, minor vs major GC, G1, ZGC (overview)
-- [ ] Memory leaks in Java (yes, they exist) and how to spot them
-- [ ] `StackOverflowError` vs `OutOfMemoryError`
-- [ ] JIT compilation
-- [ ] Strong, soft, weak and phantom references
-- [ ] Immutability and defensive copies
-- [ ] Basic tools: `jconsole`, VisualVM, `jstack`, `jmap`
-
-**DSA Track:** trees
-- [ ] Invert Binary Tree
-- [ ] Maximum Depth of Binary Tree
-- [ ] Same Tree
-- [ ] Diameter of Binary Tree
-- [ ] Balanced Binary Tree
-- [ ] Binary Tree Level Order Traversal
-- [ ] Validate Binary Search Tree
-- [ ] Lowest Common Ancestor of a BST
-- [ ] Kth Smallest Element in a BST
-
-**Checkpoint:**
-- Where are objects, local variables and static variables stored?
-- How does the GC decide an object can be collected?
-- Give an example of a memory leak in Java.
-
----
-
-## Phase 6 — Concurrency and Multithreading
-
-**Goal:** understand threads well enough to discuss race conditions and choose the right tools.
-
-- [ ] `Thread`, `Runnable`, `Callable`, thread lifecycle
-- [ ] Race conditions, `synchronized`, intrinsic locks
-- [ ] `volatile` and the Java Memory Model (happens-before)
-- [ ] `wait`/`notify` and the producer-consumer problem
-- [ ] `ExecutorService`, thread pools, `Future`
-- [ ] `CompletableFuture` (chaining, combining, error handling)
-- [ ] `java.util.concurrent`: `ConcurrentHashMap`, `AtomicInteger`, `CountDownLatch`, `Semaphore`, `ReentrantLock`
-- [ ] Deadlock, livelock, starvation — and how to prevent them
-- [ ] Virtual threads (Java 21)
-- [ ] Thread-safe singleton
-
-**DSA Track:** heaps and backtracking
-- [ ] Kth Largest Element in a Stream
-- [ ] Last Stone Weight
-- [ ] K Closest Points to Origin
-- [ ] Task Scheduler
-- [ ] Subsets
-- [ ] Combination Sum
-- [ ] Permutations
-- [ ] Word Search
-
-**Checkpoint:**
+**Interview questions (Part 2)**
 - `synchronized` vs `volatile` vs `AtomicInteger`: when do you use each?
 - Why is `HashMap` not thread-safe, and how does `ConcurrentHashMap` solve it?
-- What are virtual threads, and when do they help?
+- What are the four conditions for a deadlock?
 
 ---
 
-## Phase 7 — Testing, Design Patterns and Clean Code
+## Part 3 — Deep Dives and Interview Ready
 
-**Goal:** write code a team would happily review.
+### m14 — JVM and Memory
+- [ ] Class loading; stack vs heap; what lives where
+- [ ] Garbage collection: generations, G1, ZGC (overview)
+- [ ] Memory leaks in Java; `StackOverflowError` vs `OutOfMemoryError`
+- [ ] JIT; strong, soft, weak and phantom references
 
-- [ ] JUnit 5: `@Test`, `@BeforeEach`, `@ParameterizedTest`, assertions
-- [ ] Mockito: mocks, stubs, `verify`
-- [ ] TDD basics (red → green → refactor) — try it on a few LeetCode solutions
-- [ ] Creational patterns: Singleton, Factory, Builder
-- [ ] Structural patterns: Adapter, Decorator, Facade
-- [ ] Behavioral patterns: Strategy, Observer, Template Method
-- [ ] Clean code: naming, small methods, avoiding side effects
-- [ ] Maven: lifecycle, dependencies, scopes
-- [ ] Git workflow: branches, meaningful commits, pull requests
+### m15 — Design Patterns and Testing
+- [ ] Singleton, Factory, Builder, Strategy, Observer, Decorator
+- [ ] SOLID with examples
+- [ ] JUnit 5 and Mockito; TDD on a few LeetCode solutions
 
-**DSA Track:** graphs
-- [ ] Number of Islands
-- [ ] Clone Graph
-- [ ] Max Area of Island
-- [ ] Rotting Oranges
-- [ ] Pacific Atlantic Water Flow
-- [ ] Course Schedule
-- [ ] Number of Connected Components in an Undirected Graph
+### m16 — Spring Boot
+- [ ] IoC and dependency injection, beans and scopes
+- [ ] REST API with validation and `@ControllerAdvice`
+- [ ] JPA/Hibernate, the N+1 problem, `@Transactional` pitfalls
+- [ ] Mini project: a LeetCode progress tracker API
 
-**Checkpoint:**
-- Implement a Builder for a class with 6 fields.
-- Explain Strategy vs Template Method.
-- What is the difference between a mock and a stub?
+### m17 — Interview Simulation
+- [ ] Low-level design: LRU cache, parking lot, rate limiter
+- [ ] 5 timed coding mocks (45 min, 1 medium problem + follow-ups)
+- [ ] Behavioral: 5–6 stories using the STAR method
 
 ---
 
-## Phase 8 — Backend Ecosystem (Spring Boot)
+## DSA Track (LeetCode)
 
-**Goal:** connect everything into a real backend application — most Java jobs require it.
+Solved in `src/main/java/leetcode/`, roughly following the [NeetCode Roadmap](https://neetcode.io/roadmap). Do 3–5 problems a week alongside the Java modules.
 
-- [ ] Spring core: IoC, dependency injection, beans, scopes
-- [ ] Spring Boot: auto-configuration, starters, `application.properties`/`yml`, profiles
-- [ ] REST APIs: `@RestController`, `@RequestMapping`, DTOs, validation, exception handling (`@ControllerAdvice`)
-- [ ] JDBC basics and SQL (joins, indexes, transactions)
-- [ ] JPA/Hibernate: entities, relationships, lazy vs eager, the N+1 problem
-- [ ] Spring Data JPA repositories
-- [ ] Transactions: `@Transactional`, propagation, isolation
-- [ ] Spring Security basics, JWT
-- [ ] Integration tests with `@SpringBootTest` and Testcontainers
-- [ ] Docker basics for running the app and the database
+| Pattern | Problems |
+|---|---|
+| Arrays & Strings | - [x] Remove Element<br>- [x] Longest Common Prefix<br>- [x] Find the Index of the First Occurrence in a String<br>- [ ] Two Sum<br>- [ ] Merge Sorted Array<br>- [ ] Remove Duplicates from Sorted Array |
+| Stack | - [x] Valid Parentheses<br>- [ ] Min Stack<br>- [ ] Daily Temperatures |
+| Hashing | - [ ] Contains Duplicate<br>- [ ] Valid Anagram<br>- [ ] Group Anagrams<br>- [ ] Top K Frequent Elements |
+| Two Pointers | - [ ] Valid Palindrome<br>- [ ] 3Sum<br>- [ ] Container With Most Water |
+| Sliding Window | - [ ] Best Time to Buy and Sell Stock<br>- [ ] Longest Substring Without Repeating Characters |
+| Binary Search | - [ ] Binary Search<br>- [ ] Search in Rotated Sorted Array |
+| Linked List | - [ ] Reverse Linked List<br>- [ ] Merge Two Sorted Lists<br>- [ ] Linked List Cycle |
+| Trees | - [ ] Invert Binary Tree<br>- [ ] Maximum Depth of Binary Tree<br>- [ ] Validate Binary Search Tree<br>- [ ] Binary Tree Level Order Traversal |
+| Heap | - [ ] Kth Largest Element in a Stream<br>- [ ] K Closest Points to Origin |
+| Backtracking | - [ ] Subsets<br>- [ ] Combination Sum |
+| Graphs | - [ ] Number of Islands<br>- [ ] Course Schedule |
+| Dynamic Programming | - [ ] Climbing Stairs<br>- [ ] House Robber<br>- [ ] Coin Change |
+| Advanced | - [ ] LRU Cache<br>- [ ] Merge Intervals<br>- [ ] Implement Trie |
 
-**Mini project:** build a small REST API (e.g. a task manager or a LeetCode progress tracker) using everything from this phase.
+### Problem-Solving Routine (use it on every problem)
 
-**DSA Track:** dynamic programming (1D)
-- [ ] Climbing Stairs
-- [ ] Min Cost Climbing Stairs
-- [ ] House Robber
-- [ ] House Robber II
-- [ ] Longest Palindromic Substring
-- [ ] Decode Ways
-- [ ] Coin Change
-- [ ] Longest Increasing Subsequence
-- [ ] Word Break
-
-**Checkpoint:**
-- How does dependency injection work in Spring?
-- What is the N+1 problem, and how do you fix it?
-- What happens when a `@Transactional` method calls another one in the same class?
-
----
-
-## Phase 9 — Advanced and Interview Ready
-
-**Goal:** close the gaps and simulate the real thing.
-
-- [ ] Reflection and annotations (create a custom annotation)
-- [ ] Java I/O and NIO (`Files`, `Path`)
-- [ ] Serialization and JSON (Jackson)
-- [ ] Performance: profiling, benchmarking with JMH (overview)
-- [ ] System design fundamentals: caching, load balancing, queues, databases (SQL vs NoSQL)
-- [ ] Low-level design practice: parking lot, LRU cache, rate limiter, elevator
-- [ ] Behavioral interview: prepare 5–6 stories using the STAR method
-
-**DSA Track:** advanced
-- [ ] LRU Cache
-- [ ] Implement Trie (Prefix Tree)
-- [ ] Merge Intervals
-- [ ] Insert Interval
-- [ ] Non-overlapping Intervals
-- [ ] Unique Paths
-- [ ] Longest Common Subsequence
-- [ ] Find Median from Data Stream
-- [ ] Merge k Sorted Lists
-- [ ] Trapping Rain Water
-
-**Mock interviews:**
-- [ ] 5 timed mock interviews (45 min: 1 medium problem + follow-ups)
-- [ ] 2 low-level design mocks
-- [ ] 1 full loop simulation (coding + design + behavioral)
-
----
-
-## Interview Problem-Solving Routine
-
-Use this for **every** LeetCode problem, not just in mocks:
-
-1. **Understand:** restate the problem and ask about input size, edge cases and constraints.
-2. **Examples:** walk through 1–2 examples by hand, including an edge case.
-3. **Brute force:** say the naive solution and its complexity out loud.
-4. **Optimize:** find the bottleneck and pick a better data structure or pattern.
-5. **Code:** write clean code with meaningful names.
-6. **Test:** dry-run your code with the examples and edge cases.
-7. **Complexity:** state the final time and space complexity.
+1. **Understand:** restate the problem; ask about constraints and edge cases.
+2. **Examples:** walk through 1–2 examples by hand.
+3. **Brute force:** say it out loud with its complexity.
+4. **Optimize:** find the bottleneck; pick a better data structure or pattern.
+5. **Code** with meaningful names.
+6. **Test** by dry-running the examples and edge cases.
+7. **Complexity:** state final time and space.
 
 ---
 
 ## Resources
 
-- [Official Java Tutorials (dev.java)](https://dev.java/learn/)
-- [Java SE 21 API Docs](https://docs.oracle.com/en/java/javase/21/docs/api/)
-- *Effective Java* — Joshua Bloch (a must-read for interviews)
+- [Maratona Java Virado no Jiraya — DevDojo](https://www.youtube.com/watch?v=VKjFuX91G5Q&list=PL62G310vn6nFIsOCC0H-C2infYgwm8SWW) (free, Portuguese) · [source code](https://github.com/devdojobr/maratona-java-virado-no-jiraya)
+- [Oracle — Controlling Access to Members of a Class](https://docs.oracle.com/javase/tutorial/java/javaOO/accesscontrol.html)
+- [Jenkov — Java Concurrency Tutorial](https://jenkov.com/tutorials/java-concurrency/index.html)
+- *Effective Java* — Joshua Bloch (chapter 4, "Classes and Interfaces", is a must for modules m01–m06)
 - *Java Concurrency in Practice* — Brian Goetz
-- [NeetCode Roadmap](https://neetcode.io/roadmap) — the DSA Track roughly follows its order
-- [Baeldung](https://www.baeldung.com/) — practical Java and Spring articles
-- [Refactoring Guru](https://refactoring.guru/design-patterns) — design patterns explained
+- [NeetCode Roadmap](https://neetcode.io/roadmap)
